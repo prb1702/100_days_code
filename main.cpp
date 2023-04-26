@@ -4,56 +4,101 @@ using namespace std;
 
 class Stack
 {
-    int data;
-    Stack *next,*top;
+    int top;
+    int arr[5];
 public:
     Stack()
     {
-        top=NULL;
+        top=-1;
+        for(int i=0;i<5;i++)
+        {
+            arr[i]=0;
+        }
     }
+
+    bool isEmpty();
+    bool isFull();
     void push(int);
-    void pop();
+    int pop();
+    int Count();
+    int peek(int);
     void display();
 };
 
-void Stack :: push(int element)
+bool Stack :: isEmpty()
 {
-    Stack *newnode = new Stack;
-    newnode->data = element;
-    newnode->next = NULL;
-    if(top==NULL)
+    if(top==-1)
     {
-        top=newnode;
+        return true;
     }
     else
     {
-        newnode->next=top;
-        top=newnode;
+        return false;
     }
 }
 
-void Stack :: pop()
+bool Stack :: isFull()
 {
-    if(top==NULL)
+    if(top==4)
     {
-        cout << "Stack is empty";
+        return true;
     }
     else
     {
-        Stack *ptr=top;
-        top=top->next;
-        delete ptr;
+        return false;
+    }
+}
+
+void Stack :: push(int data)
+{
+    if(isFull())
+    {
+        cout << "Stack is full! Cannot push an element" <<endl;
+    }
+    else{
+        top++;
+        arr[top]=data;
+    }
+}
+
+int Stack :: pop()
+{
+    if(isEmpty())
+    {
+        cout << "stack is empty" << endl;
+        return 0;
+    }
+    else
+    {
+        int popVal = arr[top];
+        arr[top]=0;
+        top--;
+        return popVal;
+    }
+}
+
+int Stack :: Count()
+{
+    return (top+1);
+}
+
+int Stack :: peek(int ind)
+{
+    if(isEmpty())
+    {
+        cout << "Stack underflow" << endl;
+        return 0;
+    }
+    else{
+        return arr[ind];
     }
 }
 
 void Stack :: display()
 {
-    Stack * temp = top;
-    while(temp!=NULL)
+    for(int i=4;i>=0;i--)
     {
-        cout << temp->data;
-        cout << " ";
-        temp=temp->next;
+         cout << arr[i] << "\t";
     }
 }
 
@@ -61,20 +106,20 @@ int main()
 {
     Stack s;
 
-    cout << "Enter\n1 for push\n2 for pop\n3 for display\n4 for exit" << endl;
+    cout << "Enter\n1 for push\n2 for pop\n3 for peek\n4 for count\n5 for display\n6 for exit" << endl;
 
-    int i=1,choice;
+    int choice,i=1;
 
     while(i)
     {
-        cout << "\nEnter your choice : ";
+        cout << "Enter your choice : ";
         cin >> choice;
 
         switch(choice)
         {
         case 1:
             int element;
-            cout << "Enter an element you want to push onto stack : ";
+            cout << "Enter an element to push onto stack : " ;
             cin >> element;
             s.push(element);
             break;
@@ -82,13 +127,28 @@ int main()
             s.pop();
             break;
         case 3:
+            {
+                int pos;
+                cout << "Enter the position : ";
+                cin >> pos;
+                pos=s.peek(pos);
+                cout << "Element at the entered position : " << pos << endl;
+                break;
+            }
+        case 4:
+            {
+                int cnt = s.Count();
+                cout << "Count of elements in the stack : " << cnt << endl;
+                break;
+            }
+        case 5:
             s.display();
             break;
-        case 4:
+        case 6:
             i=0;
             break;
         default:
-            cout << "Invalid input!";
+            cout << "Invalid input" << endl;
         }
     }
 
