@@ -79,26 +79,23 @@ tree* tree :: Insert(tree* root)
 tree* tree :: Search(tree* root, int key)
 {
     tree* curr = root;
-    while(1)
+    if(curr==NULL)
     {
-        if(curr==NULL)
+        return 0;
+    }
+    while(curr!=NULL)
+    {
+        if(key == curr->data)
         {
-            return 0;
+            return curr;
         }
-        while(curr!=NULL)
+        else if(key < curr->data)
         {
-            if(key == curr->data)
-            {
-                return curr;
-            }
-            else if(key < curr->data)
-            {
-                curr = curr->left;
-            }
-            else if(key > curr->data)
-            {
-                curr=curr->right;
-            }
+            curr = curr->left;
+        }
+        else if(key > curr->data)
+        {
+            curr=curr->right;
         }
     }
     return curr;
