@@ -5,91 +5,95 @@ using namespace std;
 class tree
 {
 public:
-    tree *left;
-    tree *right;
+    tree* left;
+    tree* right;
     int data;
-    tree* create(int);
+    tree * create(int);
     tree* Insert(tree*);
-    tree* Search(tree*,int);
-    void inorder(tree*);
-    void preorder(tree*);
-    void del(tree*);
+    tree * Search(tree*, int);
+    tree* inorder(tree*);
+    tree* preorder(tree*);
+    tree* minValueNode(tree*);
+    tree* deleteNode(tree*,int);
 };
+
 
 tree* tree :: create(int item)
 {
-    tree* newnode=new tree;
-    newnode->data=item;
-    newnode->right=NULL;
-    newnode->left=NULL;
+    tree* newnode = new tree;
+    newnode->left = NULL;
+    newnode->right = NULL;
+    newnode->data = item;
+
     return newnode;
 }
 
 tree* tree :: Insert(tree* root)
 {
     int key;
-    cout << "Enter the element you want to insert : ";
+    cout << "Enter the data you want to insert : ";
     cin >> key;
-    tree* curr;
-    tree* newnode=create(key);
 
-    if(root==NULL)
+    tree* newnode;
+    tree* curr;
+
+    newnode = create(key);
+
+    if(root == NULL)
     {
         root=newnode;
     }
     else
     {
-        curr=root;
+        curr = root;
         while(1)
         {
-            if(key==curr->data)
-                return NULL;
-            else if(key < curr->data && curr->left==NULL)
+            if(key == curr->data)
             {
-                curr->left=newnode;
+                cout << "Element already exists !";
+                return root;
+            }
+            else if(key < curr->data && curr->left == NULL)
+            {
+                curr->left = newnode;
                 return root;
             }
             else if(key < curr->data)
             {
                 curr=curr->left;
             }
-            else if(key > curr->data && curr->right==NULL)
+            else if(key > curr->data && curr->right == NULL)
             {
-                curr->right=newnode;
+                curr->right = newnode;
                 return root;
             }
-            else
+            else if(key > curr->data)
             {
-                curr=curr->right;
+                curr = curr->right;
             }
         }
     }
     return root;
 }
 
-tree* tree :: Search(tree* root,int key)
+tree* tree :: Search(tree* root, int key)
 {
-    /*int key;
-    cout << "Enter the element you want to search : ";
-    cin >> key;*/
-
-    tree* curr;
-    curr=root;
-
+    tree* curr = root;
     while(1)
     {
         if(curr==NULL)
-            return 0;
-        while(curr!=NULL)
-
         {
-            if(key==curr->data)
+            return 0;
+        }
+        while(curr!=NULL)
+        {
+            if(key == curr->data)
             {
                 return curr;
             }
             else if(key < curr->data)
             {
-                curr=curr->left;
+                curr = curr->left;
             }
             else if(key > curr->data)
             {
@@ -100,143 +104,135 @@ tree* tree :: Search(tree* root,int key)
     return curr;
 }
 
-void tree :: del(tree* root)
+
+tree* tree :: inorder(tree* root)
 {
-    tree* curr=root;
-    tree* prev;
-    int key;
-    cout << "Enter the element you want to delete : ";
-    cin >> key;
-
-    if(curr==NULL)
-        return;
-    while(curr!=NULL && key!=curr->data)
+    if(root == NULL)
     {
-        prev=curr;
-        if(key<curr->data)
-            curr=curr->left;
-        else
-            curr=curr->right;
-    }
-    cout << curr->data << endl;
-    if(curr->right==NULL && curr->left==NULL)
-    {
-        if(curr==prev->right)
-        {
-            prev->right=NULL;
-        }
-        else if(curr==prev->left)
-        {
-            prev->left=NULL;
-        }
-    }
-    else if(curr->left==NULL)
-    {
-        if(curr->right->data < prev->data)
-        {
-            prev->left=curr->right;
-        }
-        else
-        {
-            prev->right = curr->right;
-        }
-    }
-    else if(curr->left != NULL && curr->right == NULL)
-    {
-        if(curr->left->data < prev->data)
-        {
-            prev->left=curr->left;
-        }
-        else
-        {
-            prev->right = curr->left;
-        }
-    }
-    else if(curr->left!=NULL && curr->right!=NULL)
-    {
-        tree* rmin=curr->right;
-        while(rmin->left!=NULL)
-        {
-            rmin=rmin->left;
-        }
-        curr->data=rmin->data;
-        if(rmin=curr->right)
-        {
-            curr->right=NULL;
-        }
-        delete rmin;
-    }
-
-}
-
-void tree :: inorder(tree* root)
-{
-    if(root==NULL)
-    {
-        return;
+        return NULL;
     }
     inorder(root->left);
-    cout << root->data<<"\t";
+    cout << root->data << "\t";
     inorder(root->right);
 }
 
-void tree :: preorder(tree* root)
+tree* tree :: preorder(tree* root)
 {
-    if(root==NULL)
-        return;
-    cout << root->data<<"\t";
+    if(root == NULL)
+    {
+        return NULL;
+    }
+    cout << root->data << "\t";
     preorder(root->left);
     preorder(root->right);
 }
 
+tree* tree :: minValueNode(tree* node)
+{
+    tree* curr = node;
+    while(curr->left!=NULL)
+    {
+        curr=curr->left;
+    }
+    return curr;
+}
+
+tree* tree :: deleteNode(tree* root,int key)
+{
+    tree* temp;
+    if(root==NULL)
+    {
+        return NULL;
+    }
+    else if(key < root->data)
+    {
+        root->left = deleteNode(root->left,key);
+    }
+    else if(key > root->data)
+    {
+        root->right = deleteNode(root->right,key);
+    }
+    else
+    {
+        /*node with only one child or no child*/
+        if(root->left == NULL)
+        {
+            temp =root->right;
+            delete root;
+            return temp;
+        }
+        else if(root->right == NULL)
+        {
+            temp=root->left;
+            delete root;
+            return temp;
+        }
+
+        /*node with two children*/
+
+        else
+        {
+            temp = minValueNode(root->right);
+            root->data = temp->data;
+            root->right = deleteNode(root->right,temp->data);
+        }
+        return root;
+    }
+}
+
 int main()
 {
-    tree t;
-    tree* root=NULL;
-    tree* srch;
 
-    int i=1,choice;
+    tree t;
+
+    tree* root = NULL;
+    tree* s;
+
+    int i=1;
+    int ch;
+    int key;
+
     while(i)
     {
-        cout << "\n1 for insert \n2 for inorder \n3 for preorder \n4 for search \n5 for
-             delete \n6 for exit" <<endl;
-             cout << "Enter your choice : ";
-    cin >> choice;
-    switch(choice)
+        cout << "\n1 for insert\n2 for search\n3 for inorder\n4 for preorder\n5 for delete";
+        cout << "\nEnter your choice : ";
+        cin >> ch;
+
+        switch(ch)
         {
         case 1:
-            root=t.Insert(root);
+            root = t.Insert(root);
             break;
         case 2:
-            t.inorder(root);
+            int key;
+            cout << "Enter the key you want to search : " << endl;
+            cin >> key;
+            s = t.Search(root,key);
+            if(s==NULL)
+            {
+                cout << "Element not found!" << endl;
+            }
+            else{
+                cout << "Element found!" << endl;
+            }
             break;
         case 3:
-            t.preorder(root);
+            t.inorder(root);
             break;
         case 4:
-            int key;
-            cout << "Enter the element you want to search : ";
-            cin >> key;
-            srch=t.Search(root,key);
-            if(srch==NULL)
-            {
-                cout << "Element not found !" << endl;
-            }
-            else
-            {
-                cout << "Element found !" << endl;
-            }
+            t.preorder(root);
             break;
         case 5:
-            t.del(root);
-            break;
-        case 6:
-            i=0;
+            cout << "Enter the element you want to delete : ";
+            cin >> key;
+            root = t.deleteNode(root,key);
             break;
         default:
-            cout << "Invalid choice !" <<endl;
+            cout << "Invalid choice!" << endl;
         }
     }
+
+
 
     return 0;
 }
